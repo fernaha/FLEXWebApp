@@ -10,26 +10,26 @@ using System.Threading.Tasks;
 
 namespace APIWebApp.Controllers
 {
-    public class InventoryController : Controller
+    public class WarehouseInventoryController : Controller
     {
-        private readonly IInventoryService _inventory;
+        private readonly IWarehouseInventoryService _WarehouseInventory;
         private readonly IWebHostEnvironment _env;
 
-        public InventoryController(IInventoryService inventory, IWebHostEnvironment env)
+        public WarehouseInventoryController(IWarehouseInventoryService WarehouseInventory, IWebHostEnvironment env)
         {
-            _inventory = inventory;
+            _WarehouseInventory = WarehouseInventory;
             _env = env;
         }
 
         public async Task<IActionResult> Index()
         {
-            var items = await _inventory.GetAllAsync();
+            var items = await _WarehouseInventory.GetAllAsync();
             return View(items);
         }
 
         public async Task<IActionResult> Details(string id)
         {
-            var item = await _inventory.GetByIdAsync(id);
+            var item = await _WarehouseInventory.GetByIdAsync(id);
             if (item == null) return NotFound();
             return View(item);
         }
@@ -37,13 +37,13 @@ namespace APIWebApp.Controllers
         [Authorize(Policy = "MinPermission2")]
         public IActionResult Create()
         {
-            return View(new InventoryItem());
+            return View(new WarehouseInventoryItem());
         }
 
         [HttpPost]
         [Authorize(Policy = "MinPermission2")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(InventoryItem model, IFormFile? image)
+        public async Task<IActionResult> Create(WarehouseInventoryItem model, IFormFile? image)
         {
             if (!ModelState.IsValid) return View(model);
 
@@ -60,14 +60,14 @@ namespace APIWebApp.Controllers
                 model.ImagePath = "/uploads/" + fileName;
             }
 
-            await _inventory.AddOrUpdateAsync(model);
+            await _WarehouseInventory.AddOrUpdateAsync(model);
             return RedirectToAction("Index");
         }
 
         [Authorize(Policy = "MinPermission2")]
         public async Task<IActionResult> Edit(string id)
         {
-            var item = await _inventory.GetByIdAsync(id);
+            var item = await _WarehouseInventory.GetByIdAsync(id);
             if (item == null) return NotFound();
             return View(item);
         }
@@ -75,7 +75,7 @@ namespace APIWebApp.Controllers
         [HttpPost]
         [Authorize(Policy = "MinPermission2")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(InventoryItem model, IFormFile? image)
+        public async Task<IActionResult> Edit(WarehouseInventoryItem model, IFormFile? image)
         {
             if (!ModelState.IsValid) return View(model);
 
@@ -92,7 +92,7 @@ namespace APIWebApp.Controllers
                 model.ImagePath = "/uploads/" + fileName;
             }
 
-            await _inventory.AddOrUpdateAsync(model);
+            await _WarehouseInventory.AddOrUpdateAsync(model);
             return RedirectToAction("Index");
         }
 
@@ -101,7 +101,7 @@ namespace APIWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
-            await _inventory.DeleteAsync(id);
+            await _WarehouseInventory.DeleteAsync(id);
             return RedirectToAction("Index");
         }
     }
