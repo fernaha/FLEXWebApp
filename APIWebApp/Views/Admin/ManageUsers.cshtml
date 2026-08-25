@@ -1,0 +1,67 @@
+@model List<APIWebApp.Models.User>
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<h2>Manage Users</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Permission Level</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Username</td>
+                <td>
+                    <form method="post" asp-controller="Admin" asp-action="UpdateUser" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="username" value="@u.Username" />
+                        <select name="permissionLevel" class="form-select d-inline w-auto me-2">
+                            <option value="1" selected="@(u.PermissionLevel==1)">1</option>
+                            <option value="2" selected="@(u.PermissionLevel==2)">2</option>
+                            <option value="3" selected="@(u.PermissionLevel==3)">3</option>
+                        </select>
+                        <input type="password" name="password" placeholder="(change password)" class="form-control d-inline w-25 me-2" />
+                        <button class="btn btn-sm btn-primary" type="submit">Update</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" asp-controller="Admin" asp-action="DeleteUser" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="username" value="@u.Username" />
+                        <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Create New User</h3>
+<form method="post" asp-controller="Admin" asp-action="UpdateUser">
+    @Html.AntiForgeryToken()
+    <div class="row g-2">
+        <div class="col-md-4">
+            <input name="username" class="form-control" placeholder="username" />
+        </div>
+        <div class="col-md-3">
+            <select name="permissionLevel" class="form-select">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="password" name="password" class="form-control" placeholder="password" />
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-success">Create</button>
+        </div>
+    </div>
+</form>

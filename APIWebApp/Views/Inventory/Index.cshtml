@@ -1,0 +1,46 @@
+@model List<APIWebApp.Models.InventoryItem>
+@{
+    ViewData["Title"] = "Inventory";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Inventory</h2>
+    @if (User?.Identity?.IsAuthenticated ?? false)
+    {
+        if (User.HasClaim(c => c.Type == "PermissionLevel" && int.Parse(c.Value) >= 2))
+        {
+            <a class="btn btn-primary" asp-controller="Inventory" asp-action="Create">Create Item</a>
+        }
+    }
+</div>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                @if (!string.IsNullOrEmpty(item.ImagePath))
+                {
+                    <img src="@item.ImagePath" class="card-img-top" style="height:200px;object-fit:cover" />
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text">@item.Description</p>
+                    <p class="card-text"><strong>Stock:</strong> @item.StockCount</p>
+                    <a class="btn btn-sm btn-secondary" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (User?.Identity?.IsAuthenticated ?? false)
+                    {
+                        if (User.HasClaim(c => c.Type == "PermissionLevel" && int.Parse(c.Value) >= 2))
+                        {
+                            <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <form method="post" asp-action="Delete" asp-route-id="@item.Id" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                            </form>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

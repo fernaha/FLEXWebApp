@@ -1,0 +1,16 @@
+@model APIWebApp.Models.InventoryItem
+@{
+    ViewData["Title"] = "Item Details";
+}
+
+<h2>@Model.Name</h2>
+
+@if (!string.IsNullOrEmpty(Model.ImagePath))
+{
+    <img src="@Model.ImagePath" class="img-fluid mb-3" />
+}
+
+<p>@Model.Description</p>
+<p><strong>Stock:</strong> @Model.StockCount</p>
+
+<a class="btn btn-secondary" asp-action="Index">Back to list</a>
